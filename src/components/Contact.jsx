@@ -1,24 +1,35 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { sendBrevoEmail } from '../utils/sendBrevoEmail';
 
 function Contact() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState(null);
+  const form = useRef();
+  const [status, setStatus] = useState(null); // 'success' | 'error' | null
 
-  const handleChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async e => {
+  const sendEmail = async (e) => {
     e.preventDefault();
     setStatus(null);
+
+    const name = form.current.user_name.value;
+    const email = form.current.user_email.value;
+    const message = form.current.user_message.value;
+
     try {
-      await sendBrevoEmail(formData);
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        form.current.reset();
+      } else {
+        setStatus('error');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
       setStatus('error');
     }
   };
@@ -33,40 +44,39 @@ function Contact() {
     >
       <div className="max-w-2xl mx-auto text-center">
         <h2 className="text-3xl font-bold mb-8 text-red-600">Contáctanos</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+
+        <form ref={form} onSubmit={sendEmail} className="space-y-6">
           <input
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
+            name="user_name"
             placeholder="Tu nombre"
             required
             className="w-full bg-gray-800 text-white px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
           />
+
           <input
             type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            name="user_email"
             placeholder="Tu correo"
             required
             className="w-full bg-gray-800 text-white px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
           />
+
           <textarea
-            name="message"
+            name="user_message"
             rows="5"
-            value={formData.message}
-            onChange={handleChange}
             placeholder="Tu mensaje"
             required
             className="w-full bg-gray-800 text-white px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
           />
+
           <button
             type="submit"
             className="bg-red-600 hover:bg-red-500 transition px-6 py-3 rounded font-semibold"
           >
             Enviar mensaje
           </button>
+
           {status === 'success' && (
             <p className="text-green-400 mt-4">✅ ¡Mensaje enviado con éxito!</p>
           )}
