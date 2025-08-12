@@ -1,0 +1,12 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <filter id="g" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#e50914" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  <g filter="url(#g)">
+    <polygon points="128,12 230,70 230,186 128,244 26,186 26,70" fill="#e50914"/>
+    <path d="M88 88h24l24 36 24-36h24l-48 80z" fill="#fff"/>
+  </g>
+</svg>

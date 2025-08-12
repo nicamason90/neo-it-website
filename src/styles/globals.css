@@ -1,0 +1,15 @@
+/* src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base dark mode */
+html, body {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Sombra suave usada en tarjetas/botones */
+.shadow-soft {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
